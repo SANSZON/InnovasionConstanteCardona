@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos - Innovacion constante</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-black: #121212;
+            --secondary-black: #1a1a1a;
+            --card-black: #1e1e1e;
+            --primary-yellow: #FFD700;
+            --secondary-yellow: #FFC000;
+            --primary-gray: #2a2a2a;
+            --secondary-gray: #3a3a3a;
+            --text-color: #f5f5f5;
+            --accent-gray: #888;
+            --danger: #ff4d4d;
+            --success: #00cc66;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--primary-black);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Header */
+        header {
+            background-color: rgba(18, 18, 18, 0.95);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--primary-yellow);
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+            position: relative;
+        }
+        
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-yellow);
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--primary-yellow);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* Contenedor principal */
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 2rem;
+            gap: 2rem;
+        }
+        
+        /* Sección de formulario */
+        .form-section {
+            flex: 1;
+            background-color: var(--secondary-black);
+            padding: 2rem;
+            border-radius: 15px;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--primary-yellow);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-yellow);
+            border-radius: 2px;
+        }
+        
+        .publish-form {
+            background-color: var(--card-black);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            color: var(--primary-yellow);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--primary-gray);
+            border-radius: 8px;
+            background-color: var(--primary-gray);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary-yellow);
+            outline: none;
+            background-color: var(--secondary-gray);
+        }
+        
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-group small {
+            display: block;
+            margin-top: 0.5rem;
+            color: var(--accent-gray);
+            font-size: 0.85rem;
+        }
+        
+        .submit-btn {
+            background-color: var(--primary-yellow);
+            color: var(--primary-black);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+            margin-top: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--secondary-yellow);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+        
+        /* Sección de lista de productos */
+        .products-section {
+            flex: 1;
+            background-color: var(--secondary-black);
+            padding: 2rem;
+            border-radius: 15px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .products-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .product-card {
+            background-color: var(--card-black);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            color: var(--primary-yellow);
+            font-weight: 600;
+        }
+        
+        .product-price {
+            font-size: 1.1rem;
+            color: var(--primary-yellow);
+            font-weight: bold;
+        }
+        
+        .product-description {
+            color: var(--accent-gray);
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+        
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            flex: 1;
+        }
+        
+        .edit-btn {
+            background-color: var(--primary-yellow);
+            color: var(--primary-black);
+        }
+        
+        .edit-btn:hover {
+            background-color: var(--secondary-yellow);
+        }
+        
+        .delete-btn {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background-color: #ff3333;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--secondary-black);
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--primary-gray);
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-gray);
+        }
+        
+        .contact-item i {
+            color: var(--primary-yellow);
+        }
+        
+        .whatsapp-link {
+            display: inline-flex;
+            align-items: center;
+            background-color: #25D366;
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-link:hover {
+            background-color: #128C7E;
+            transform: scale(1.05);
+        }
+        
+        .social-links {
+            margin-bottom: 1.5rem;
+        }
+        
+        .social-links a {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin: 0 0.8rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: var(--primary-yellow);
+        }
+        
+        .copyright {
+            color: var(--accent-gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Modal de confirmación */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background-color: var(--card-black);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .modal-title {
+            color: var(--primary-yellow);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .modal-btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-confirm {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .modal-cancel {
+            background-color: var(--primary-gray);
+            color: var(--text-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .main-container {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .logo {
+                margin-bottom: 1rem;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .nav-links li {
+                margin: 0.5rem;
+            }
+            
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .form-section, .products-section {
+                padding: 1.5rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .section-title {
+                font-size: 1.7rem;
+            }
+            
+            .logo h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo img {
+                height: 40px;
+            }
+            
+            .product-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <img src="LOGO/LOgo.png" alt="DentalTech Logo">
+            <h1>Innovasion constante</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="catalogo.html">Ver Catálogo</a></li>
+            <li><a href="#agregar">Gestión de Productos</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+    </header>
+
+    <!-- Contenedor principal -->
+    <div class="main-container">
+        <!-- Sección de formulario -->
+        <section class="form-section fade-in" id="agregar">
+            <h2 class="section-title" id="form-title">Agregar Nuevo Producto</h2>
+            <div class="publish-form">
+                <form id="product-form">
+                    <input type="hidden" id="product-id">
+                    <div class="form-group">
+                        <label for="product-name">Nombre del Producto:</label>
+                        <input type="text" id="product-name" placeholder="Ej: Unidad Dental con Escupidera" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-image">URL de la Imagen:</label>
+                        <input type="url" id="product-image" placeholder="https://ejemplo.com/imagen.jpg" required>
+                        <small>Pega la URL de una imagen o sube una desde tu dispositivo</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-description">Descripción del Producto:</label>
+                        <textarea id="product-description" placeholder="Describa las características, especificaciones y estado del equipo..." required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-price">Precio (USD):</label>
+                        <input type="number" id="product-price" placeholder="2500" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="product-category">Categoría:</label>
+                        <select id="product-category" required>
+                            <option value="">Seleccione una categoría</option>
+                            <option value="sillas">Sillas Dentales</option>
+                            <option value="rayosx">Equipos de Rayos X</option>
+                            <option value="esterilizacion">Esterilización</option>
+                            <option value="instrumental">Instrumental</option>
+                            <option value="iluminacion">Iluminación</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="form-submit">Agregar Producto</button>
+                    <button type="button" class="submit-btn" id="cancel-edit" style="display: none; margin-top: 10px; background-color: var(--primary-gray);">Cancelar Edición</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Sección de lista de productos -->
+        <section class="products-section fade-in">
+            <h2 class="section-title">Productos Existentes</h2>
+            <div class="products-list" id="products-list">
+                <!-- Los productos se cargarán aquí dinámicamente -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal de confirmación -->
+    <div class="modal" id="confirmation-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Confirmar Eliminación</h3>
+            <p>¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-confirm" id="confirm-delete">Eliminar</button>
+                <button class="modal-btn modal-cancel" id="cancel-delete">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contacto">
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span>+503 7745 1582</span>
+            </div>
+            <a href="https://wa.me/50377451582" class="whatsapp-link" target="_blank">
+                <i class="fab fa-whatsapp"></i> Contactar por WhatsApp
+            </a>
+        </div>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+        </div>
+        <p class="copyright">&copy; 2025 DentalTech. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Variables globales
+        let products = [];
+        let editingProductId = null;
+        let productToDelete = null;
+        
+        // Cargar productos al iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProducts();
+            setupEventListeners();
+        });
+        
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Formulario de producto
+            document.getElementById('product-form').addEventListener('submit', handleProductSubmit);
+            
+            // Botón de cancelar edición
+            document.getElementById('cancel-edit').addEventListener('click', cancelEdit);
+            
+            // Modal de confirmación
+            document.getElementById('confirm-delete').addEventListener('click', confirmDelete);
+            document.getElementById('cancel-delete').addEventListener('click', closeModal);
+            
+            // Cerrar modal al hacer clic fuera
+            document.getElementById('confirmation-modal').addEventListener('click', (e) => {
+                if (e.target.id === 'confirmation-modal') {
+                    closeModal();
+                }
+            });
+        }
+        
+        // Cargar productos desde localStorage
+        function loadProducts() {
+            products = JSON.parse(localStorage.getItem('products')) || [];
+            renderProductsList();
+        }
+        
+        // Guardar productos en localStorage
+        function saveProducts() {
+            localStorage.setItem('products', JSON.stringify(products));
+            renderProductsList();
+        }
+        
+        // Renderizar lista de productos
+        function renderProductsList() {
+            const productsList = document.getElementById('products-list');
+            
+            if (products.length === 0) {
+                productsList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--accent-gray);">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h3>No hay productos en el catálogo</h3>
+                        <p>Agrega tu primer producto para comenzar</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            productsList.innerHTML = '';
+            
+            // Ordenar productos por ID (más recientes primero)
+            const sortedProducts = [...products].sort((a, b) => b.id - a.id);
+            
+            sortedProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+                productCard.innerHTML = `
+                    <div class="product-header">
+                        <h3 class="product-title">${product.name}</h3>
+                        <span class="product-price">$${product.price}</span>
+                    </div>
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <p class="product-description">${product.description}</p>
+                    <div class="product-actions">
+                        <button class="action-btn edit-btn" data-id="${product.id}">Editar</button>
+                        <button class="action-btn delete-btn" data-id="${product.id}">Eliminar</button>
+                    </div>
+                `;
+                
+                productsList.appendChild(productCard);
+            });
+            
+            // Agregar event listeners a los botones
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.dataset.id);
+                    editProduct(productId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const productId = parseInt(e.target.dataset.id);
+                    showDeleteModal(productId);
+                });
+            });
+        }
+        
+        // Manejar envío del formulario
+        function handleProductSubmit(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('product-name').value;
+            const image = document.getElementById('product-image').value;
+            const description = document.getElementById('product-description').value;
+            const price = parseInt(document.getElementById('product-price').value);
+            const category = document.getElementById('product-category').value;
+            
+            if (editingProductId !== null) {
+                // Editar producto existente
+                const productIndex = products.findIndex(p => p.id === editingProductId);
+                if (productIndex !== -1) {
+                    products[productIndex] = {
+                        ...products[productIndex],
+                        name,
+                        image,
+                        description,
+                        price,
+                        category
+                    };
+                    saveProducts();
+                    cancelEdit();
+                    alert('Producto actualizado con éxito');
+                }
+            } else {
+                // Crear nuevo producto
+                const newProduct = {
+                    id: Date.now(),
+                    name,
+                    image,
+                    description,
+                    price,
+                    category,
+                    isFavorite: false,
+                    views: 0
+                };
+                
+                products.push(newProduct);
+                saveProducts();
+                alert('Producto agregado con éxito');
+            }
+            
+            // Resetear formulario
+            document.getElementById('product-form').reset();
+        }
+        
+        // Editar producto
+        function editProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+            
+            // Llenar formulario con datos del producto
+            document.getElementById('product-id').value = product.id;
+            document.getElementById('product-name').value = product.name;
+            document.getElementById('product-image').value = product.image;
+            document.getElementById('product-description').value = product.description;
+            document.getElementById('product-price').value = product.price;
+            document.getElementById('product-category').value = product.category;
+            
+            // Cambiar a modo edición
+            editingProductId = productId;
+            document.getElementById('form-title').textContent = 'Editar Producto';
+            document.getElementById('form-submit').textContent = 'Actualizar Producto';
+            document.getElementById('cancel-edit').style.display = 'block';
+            
+            // Scroll al formulario
+            document.getElementById('agregar').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Cancelar edición
+        function cancelEdit() {
+            editingProductId = null;
+            document.getElementById('product-form').reset();
+            document.getElementById('form-title').textContent = 'Agregar Nuevo Producto';
+            document.getElementById('form-submit').textContent = 'Agregar Producto';
+            document.getElementById('cancel-edit').style.display = 'none';
+        }
+        
+        // Mostrar modal de confirmación de eliminación
+        function showDeleteModal(productId) {
+            productToDelete = productId;
+            document.getElementById('confirmation-modal').style.display = 'flex';
+        }
+        
+        // Cerrar modal
+        function closeModal() {
+            document.getElementById('confirmation-modal').style.display = 'none';
+            productToDelete = null;
+        }
+        
+        // Confirmar eliminación
+        function confirmDelete() {
+            if (productToDelete !== null) {
+                products = products.filter(p => p.id !== productToDelete);
+                saveProducts();
+                closeModal();
+                alert('Producto eliminado con éxito');
+            }
+        }
+    </script>
+</body>
+</html>
